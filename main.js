@@ -1,7 +1,6 @@
 
-const arenas = document.querySelector(".arenas");
 
-const player1 = {
+const scorpion = {
     name: "Scorpion",
     hp: 50,
     img: "http://reactmarathon-api.herokuapp.com/assets/scorpion.gif",
@@ -11,7 +10,7 @@ const player1 = {
     }
 }
 
-const player2 = {
+const subzero = {
     name: "Sub-Zero",
     hp: 70,
     img: "http://reactmarathon-api.herokuapp.com/assets/subzero.gif",
@@ -21,8 +20,9 @@ const player2 = {
     }
 }
 
-createPlayer("player1", player1);
-createPlayer("player2", player2);
+const arenas = document.querySelector(".arenas");
+arenas.appendChild(createPlayer("player1", scorpion));
+arenas.appendChild(createPlayer("player2", subzero));
 
 
 function createPlayer(className, player) {
@@ -46,5 +46,6 @@ function createPlayer(className, player) {
     const charImg = character.appendChild(document.createElement("img"));
     charImg.src = player.img;
 
-    arenas.appendChild(root);
+    return root;
+
 }
