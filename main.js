@@ -11,7 +11,8 @@ const player1 = {
     weapon: ["hook"],
     attack: function () {
         console.log(this.name + 'Fight...');
-    }
+    },
+    $: null
 }
 
 const player2 = {
@@ -22,7 +23,8 @@ const player2 = {
     weapon: ["ice"],
     attack: function () {
         console.log(this.name + 'Fight...');
-    }
+    },
+    $: null
 }
 
 $arenas.appendChild(createPlayer(player1));
@@ -43,28 +45,29 @@ function createElement(tagName, classNames) {
 }
 
 function createPlayer(player) {
-    const root = createElement("div", `player${player.player}`);
+    const $player = createElement("div", `player${player.player}`);
 
-    const pbar = root.appendChild(createElement("div", "progressbar"));
+    const $pbar = $player.appendChild(createElement("div", "progressbar"));
 
-    const life = pbar.appendChild(createElement("div", "life"));
-    life.style.width = player.hp > 0 ? `${player.hp}%` : '0';
+    const $life = $pbar.appendChild(createElement("div", "life"));
+    $life.style.width = player.hp > 0 ? `${player.hp}%` : '0';
 
-    const name = pbar.appendChild(createElement("div", "name"));
-    name.innerText = player.name;
+    const $name = $pbar.appendChild(createElement("div", "name"));
+    $name.innerText = player.name;
 
-    const character = root.appendChild(createElement("div", "character"));
+    const $character = $player.appendChild(createElement("div", "character"));
 
-    const charImg = character.appendChild(createElement("img"));
-    charImg.src = player.img;
+    const $charImg = $character.appendChild(createElement("img"));
+    $charImg.src = player.img;
 
-    return root;
+    player.$ = {$player, $life};
+
+    return $player;
 }
 
 function changeHP(player) {
     player.hp -= Math.ceil((Math.random() || 0.05) * 20);
-    const $life = document.querySelector(`.player${player.player} .life`);
-    $life.style.width = player.hp > 0 ? `${player.hp}%` : '0';
+    player.$.$life.style.width = player.hp > 0 ? `${player.hp}%` : '0';
 
     if (player.hp <= 0) {
         setWinner(player.player === 1 ? player2 : player1);
