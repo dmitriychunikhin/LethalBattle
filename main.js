@@ -66,7 +66,7 @@ function createPlayer(player) {
 }
 
 function changeHP(player) {
-    player.hp -= Math.ceil((Math.random() || 0.05) * 20);
+    player.hp -= Math.ceil(Math.random() * 20) || 1;
     player.$.$life.style.width = player.hp > 0 ? `${player.hp}%` : '0';
 
     if (player.hp <= 0) {
