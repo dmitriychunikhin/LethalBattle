@@ -31,8 +31,8 @@ $arenas.appendChild(createPlayer(player1));
 $arenas.appendChild(createPlayer(player2));
 
 $rndBtn.addEventListener("click", function () {
-    !winner && changeHP(player1);
-    !winner && changeHP(player2);
+    if (!winner) { changeHP(player1); trySetWinner(); }
+    if (!winner) { changeHP(player2); trySetWinner(); }
 });
 
 
@@ -42,6 +42,10 @@ function createElement(tagName, classNames) {
         el.classList.add(classNames);
     }
     return el;
+}
+
+function randomInt(min, max) {
+    return min + Math.floor(Math.random() * (max - min + 1));
 }
 
 function createPlayer(player) {
@@ -60,27 +64,27 @@ function createPlayer(player) {
     const $charImg = $character.appendChild(createElement("img"));
     $charImg.src = player.img;
 
-    player.$ = {$player, $life};
+    player.$ = { $player, $life };
 
     return $player;
 }
 
 function changeHP(player) {
-    player.hp -= Math.ceil(Math.random() * 20) || 1;
+    player.hp -= randomInt(1, 20);
     player.$.$life.style.width = player.hp > 0 ? `${player.hp}%` : '0';
-
-    if (player.hp <= 0) {
-        setWinner(player.player === 1 ? player2 : player1);
-    }
 }
 
 
-function setWinner(player) {
-    winner = player;
+function trySetWinner() {
+    if (winner) return;
+    if (player1.hp > 0 && player2.hp > 0 ) return;
+
+    winner = player1.hp > player2.hp ? player1 : player2;
+
     $rndBtn.disabled = true;
 
     const $title = $arenas.appendChild(createElement("div", "loseTitle"));
-    $title.innerText = `${player.name} wins`;
+    $title.innerText = `${winner.name} wins`;
     $arenas.appendChild($title);
 
 }
