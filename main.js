@@ -110,7 +110,7 @@ function generateLogs(type, { player1, player2, hit }) {
         replace: function (tmpl, params) {
             let text = tmpl;
             for (let [key, val] of Object.entries(params ?? {})) {
-                text = text.replace(`[${key}]`, val);
+                text = text.replaceAll(`[${key}]`, val);
             }
             return this.add(text);
         },
@@ -129,8 +129,7 @@ function generateLogs(type, { player1, player2, hit }) {
                             playerKick: player1.name,
                             playerDefence: player2.name
                         })
-                        .replace('[text] -[hit] [[hp]/100]', {
-                            text: this.text,
+                        .replace(' -[hit] [[hp]/100]', {
                             hit,
                             hp: player2.hp
                         })
