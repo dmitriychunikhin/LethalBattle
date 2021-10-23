@@ -116,8 +116,6 @@ function generateLogs(type, { player1, player2, hit }) {
         },
 
         addTime: function () { return this.add(`${nowTime} - `) },
-        addHit: function (hit) { return this.add(` -${hit}`) },
-        addHP: function (hp) { return this.add(` [${hp}/100]`) },
 
         build: function (type) {
             switch (type) {
@@ -131,8 +129,11 @@ function generateLogs(type, { player1, player2, hit }) {
                             playerKick: player1.name,
                             playerDefence: player2.name
                         })
-                        .addHit(hit)
-                        .addHP(player2.hp);
+                        .replace('[text] -[hit] [[hp]/100]', {
+                            text: this.text,
+                            hit,
+                            hp: player2.hp
+                        })
 
                 case 'defence':
                     return this
