@@ -1,3 +1,5 @@
+import { randomInt } from "./utils.js";
+
 const logs = {
     start: 'Часы показывали [time], когда [player1] и [player2] бросили вызов друг другу.',
     end: [
@@ -38,3 +40,70 @@ const logs = {
     draw: 'Ничья - это тоже победа!'
 };
 
+
+const generateLogs = ($chat, type, { player1, player2, hit }) => {
+    const lines = logs[type];
+    const tmpl = Array.isArray(lines) ? lines[randomInt(0, lines.length - 1)] : `${lines}`;
+    const now = new Date();
+    const nowTime = now.toTimeString().substr(0, 5);
+
+    const msgBuilder = {
+        text: '',
+        add: function (text) {
+            return { ...this, text: `${this.text}${text}` };
+        },
+
+        replace: function (tmpl, params) {
+            let text = tmpl;
+            for (let [key, val] of Object.entries(params ?? {})) {
+                text = text.replaceAll(`[${key}]`, val);
+            }
+            return this.add(text);
+        },
+
+        addTime: function () { return this.add(`${nowTime} - `) },
+
+        build: function (type) {
+            switch (type) {
+                case 'start':
+                    return this.replace(tmpl, { time: nowTime, player1: player1.name, player2: player2.name });
+
+                case 'hit':
+                    return this
+                        .addTime()
+                        .replace(tmpl, {
+                            playerKick: player1.name,
+                            playerDefence: player2.name
+                        })
+                        .replace(' -[hit] [[hp]/100]', {
+                            hit,
+                            hp: player2.hp
+                        })
+
+                case 'defence':
+                    return this
+                        .addTime()
+                        .replace(tmpl, {
+                            playerDefence: player2.name,
+                            playerKick: player1.name
+                        });
+
+                case 'end':
+                    return this.replace(tmpl, { playerWins: player1.name, playerLose: player2.name });
+
+                case 'draw':
+                    return this.replace(tmpl);
+
+                default:
+                    return null;
+            }
+        }
+    };
+
+    const msg = msgBuilder.build(type);
+
+    if (msg) $chat.insertAdjacentHTML("afterbegin", `<p>${msg.text}</p>`);
+}
+
+const getGenerateLogs = ($chat) => (...args) => generateLogs($chat, ...args);
+export default getGenerateLogs;
