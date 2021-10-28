@@ -1,7 +1,7 @@
 import { Player } from './players.js';
 import { attackUI, attackAI } from './attack.js';
 import getGenerateLogs from './logs.js';
-import { createPlayer, createReloadButton, createWinnerTitle } from './ui.js';
+import { createReloadButton, createWinnerTitle } from './ui.js';
 
 export class Game {
     constructor({ p1Character, p1IsHuman, p2Character, p2IsHuman }) {
@@ -32,11 +32,9 @@ export class Game {
 
         this.generateLogs('start', { player1, player2 });
 
-        player1.$ = createPlayer(player1);
-        player2.$ = createPlayer(player2);
 
-        this.$arenas.appendChild(player1.$.$player);
-        this.$arenas.appendChild(player2.$.$player);
+        this.$arenas.appendChild(player1.$player);
+        this.$arenas.appendChild(player2.$player);
 
         this.$reloadBtn.$btn.addEventListener("click", () => {
             window.location.reload();
