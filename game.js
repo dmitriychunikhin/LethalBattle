@@ -1,10 +1,10 @@
-import { Player } from './players.js';
+import { characters, Player } from './players.js';
 import { attackUI, attackAI } from './attack.js';
 import getGenerateLogs from './logs.js';
 import { createReloadButton, createWinnerTitle } from './ui.js';
 
 export class Game {
-    constructor({ p1Character, p1IsHuman, p2Character, p2IsHuman }) {
+    constructor() {
         this.$arenas = document.querySelector(".arenas");
         this.$rndBtn = document.querySelector("button.button");
         this.$reloadBtn = createReloadButton();
@@ -13,14 +13,14 @@ export class Game {
 
         this.player1 = new Player({
             player: 1,
-            character: p1Character,
-            attack: p1IsHuman ? attackUI : attackAI
+            character: characters['Scorpion'],
+            attack: attackUI 
         });
 
         this.player2 = new Player({
             player: 2,
-            character: p2Character,
-            attack: p2IsHuman ? attackUI : attackAI
+            character: characters['Sub-Zero'],
+            attack: attackAI
         });
 
         this.generateLogs = getGenerateLogs(this.$chat);
