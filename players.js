@@ -9,11 +9,11 @@ export class Player {
         this.weapon = weapon;
         this.attack = attack;
 
-        this.createPlayerDOM();
+        this._createDOM();
 
     }
 
-    createPlayerDOM = () => {
+    _createDOM = () => {
         const { player, hp, name, img } = this;
 
         const $player = createElement("div", `player${player}`);
