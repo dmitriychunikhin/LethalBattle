@@ -67,7 +67,7 @@ export class Game {
 
         const p1Attack = this.parseAttackForm(form);
 
-        const fight = await (await fetch('http://reactmarathon-api.herokuapp.com/api/mk/player/fight', {
+        const fight = await (await fetch('https://reactmarathon-api.herokuapp.com/api/mk/player/fight', {
             method: 'POST',
             body: JSON.stringify(p1Attack)
         })).json()
