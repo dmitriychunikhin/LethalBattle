@@ -1,5 +1,4 @@
-import { characters, Player } from './players.js';
-import { attackUI, attackAI } from './attack.js';
+import { Player } from './players.js';
 import getGenerateLogs from './logs.js';
 import { createReloadButton, createWinnerTitle } from './ui.js';
 
@@ -11,23 +10,37 @@ export class Game {
         this.$playerAttackForm = document.querySelector(".arenas .control");
         this.$chat = document.querySelector(".chat");
 
-        this.player1 = new Player({
-            player: 1,
-            character: characters['Scorpion'],
-            attack: attackUI 
-        });
-
-        this.player2 = new Player({
-            player: 2,
-            character: characters['Sub-Zero'],
-            attack: attackAI
-        });
+        this.player1 = null;
+        this.player2 = null;
 
         this.generateLogs = getGenerateLogs(this.$chat);
 
     }
 
-    start = () => {
+    start = async () => {
+
+        const player1Char = JSON.parse(localStorage.getItem('player1') || 'null');
+        const player2Char = JSON.parse(localStorage.getItem('player2') || 'null');
+
+        localStorage.removeItem('player1');
+        localStorage.removeItem('player2');
+
+        if (!player1Char || !player2Char) {
+            window.location.pathname = "/";
+        }
+
+        this.player1 = new Player({
+            player: 1,
+            character: player1Char
+        });
+
+
+        this.player2 = new Player({
+            player: 2,
+            character: player2Char
+        });
+
+
         const { player1, player2 } = this;
 
         this.generateLogs('start', { player1, player2 });
@@ -42,35 +55,64 @@ export class Game {
 
         this.$playerAttackForm.style.visibility = 'visible';
 
-        this.$playerAttackForm.addEventListener("submit", (e) => {
+        this.$playerAttackForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            this.handleAttack(e.target);
+            await this.handleAttack(e.target);
         });
     }
 
-    handleAttack = (form) => {
+    handleAttack = async (form) => {
         const { player1, player2 } = this;
 
-        const p1Resolve = player1.attack(form);
-        const p2Resolve = player2.attack(form);
+        const p1Attack = this.parseAttackForm(form);
 
-        if (p1Resolve.attack !== p2Resolve.defence) {
-            player2.acceptAttack(p1Resolve.hit);
-            this.generateLogs('hit', { player1, player2, hit: p1Resolve.hit });
+        const fight = await (await fetch('http://reactmarathon-api.herokuapp.com/api/mk/player/fight', {
+            method: 'POST',
+            body: JSON.stringify(p1Attack)
+        })).json()
+
+        const { player1: p1Resolve, player2: p2Resolve } = fight;
+
+        if (p1Resolve.hit !== p2Resolve.defence) {
+            player2.acceptAttack(p1Resolve.value);
+            this.generateLogs('hit', { player1, player2, hit: p1Resolve.value });
         } else {
             this.generateLogs('defence', { player1, player2 });
         }
 
-        if (p2Resolve.attack !== p1Resolve.defence) {
-            player1.acceptAttack(p2Resolve.hit);
-            this.generateLogs('hit', { player2: player1, player1: player2, hit: p2Resolve.hit });
+        if (p2Resolve.hit !== p1Resolve.defence) {
+            player1.acceptAttack(p2Resolve.value);
+            this.generateLogs('hit', { player2: player1, player1: player2, hit: p2Resolve.value });
         } else {
             this.generateLogs('defence', { player2: player1, player1: player2 });
         }
 
-
         this.trySetWinner();
+    }
+
+    parseAttackForm = (form) => {
+        const res = {
+            hit: "",
+            defence: ""
+        };
+
+        for (let item of form) {
+            if (item.name === "hit") {
+                if (item.checked) {
+                    res.hit = item.value;
+                }
+            }
+            if (item.name === "defence") {
+                if (item.checked) {
+                    res.defence = item.value;
+                }
+            }
+
+            item.checked = false;
+        }
+
+        return res;
     }
 
 
