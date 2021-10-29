@@ -59,14 +59,9 @@ async function init() {
 
 
             const p2ItemSel = async (count) => {
-                let $prevItem = null;
-                for (let i = 0; i <= count; i++) {
-                    if ($prevItem) $prevItem.classList.remove('active2');
-                    if (i === count) break;
-
+                for (let i = 0; i < count; i++) {
                     const p2Item = players[randomInt(0, players.length - 1)];
                     const $p2Item = $parent.querySelector(`.div${p2Item.id}`);
-                    $prevItem = $p2Item;
 
                     $p2Item.classList.add('active2');
 
@@ -77,6 +72,8 @@ async function init() {
 
                     const timer = new Promise((resolve) => { setTimeout(resolve, 300) });
                     await timer;
+
+                    $p2Item.classList.remove('active2');
                 }
 
                 const player2 = await (await fetch('https://reactmarathon-api.herokuapp.com/api/mk/player/choose')).json();
