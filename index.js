@@ -76,8 +76,7 @@ async function init() {
                     $img.src = p2Item.img;
                     $player2.appendChild($img);
 
-                    const timer = new Promise((resolve) => { setTimeout(resolve, sleep) });
-                    await timer;
+                    await new Promise((resolve) => { setTimeout(resolve, sleep) });
 
                     $p2Item.classList.remove('active2');
                 }
