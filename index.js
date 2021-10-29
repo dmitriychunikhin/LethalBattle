@@ -99,7 +99,7 @@ async function init() {
 
 
             setTimeout(async () => {
-                const player2 = await p2ItemSel(5, null, null);
+                const player2 = await p2ItemSel(5);
 
                 localStorage.setItem('player2', JSON.stringify(player2));
 
