@@ -18,6 +18,7 @@ async function init() {
     localStorage.removeItem('player2');
 
     const players = await fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json());
+    const $players = {};
 
     let imgSrc = null;
     createEmptyPlayerBlock();
@@ -25,6 +26,8 @@ async function init() {
     players.forEach(item => {
         const el = createElement('div', ['character', `div${item.id}`]);
         const img = createElement('img');
+
+        $players[item.id] = el;
 
         el.addEventListener('mousemove', () => {
             if (localStorage.getItem('player1')) return;
@@ -64,7 +67,7 @@ async function init() {
 
                 for (let i = 0; i < count; i++) {
                     const p2Item = players[randomInt(0, players.length - 1)];
-                    const $p2Item = $parent.querySelector(`.div${p2Item.id}`);
+                    const $p2Item = $players[p2Item.id];
 
                     $p2Item.classList.add('active2');
 
@@ -81,7 +84,7 @@ async function init() {
 
                 const player2 = await (await fetch('https://reactmarathon-api.herokuapp.com/api/mk/player/choose')).json();
 
-                const $p2Item = $parent.querySelector(`.div${player2.id}`);
+                const $p2Item = $players[player2.id];
                 $p2Item.classList.add('active2');
                 $player2.innerHTML = '';
                 const $img = createElement('img');
