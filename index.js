@@ -58,39 +58,43 @@ async function init() {
             el.classList.add('active1');
 
 
-            const p2ItemSel = async (count, $prevItem) => {
-                if ($prevItem) $prevItem.classList.remove('active2');
+            const p2ItemSel = async (count) => {
+                let $prevItem = null;
+                for (let i = 0; i <= count; i++) {
+                    if ($prevItem) $prevItem.classList.remove('active2');
+                    if (i === count) break;
 
-                if (!count) {
-                    const player2 = await (await fetch('https://reactmarathon-api.herokuapp.com/api/mk/player/choose')).json();
+                    const p2Item = players[randomInt(0, players.length - 1)];
+                    const $p2Item = $parent.querySelector(`.div${p2Item.id}`);
+                    $prevItem = $p2Item;
 
-                    const $p2Item = $parent.querySelector(`.div${player2.id}`);
                     $p2Item.classList.add('active2');
+
                     $player2.innerHTML = '';
                     const $img = createElement('img');
-                    $img.src = player2.img;
+                    $img.src = p2Item.img;
                     $player2.appendChild($img);
 
-                    return player2;
+                    const timer = new Promise((resolve) => {
+                        const timerId = setTimeout(() => {
+                            clearTimeout(timerId);
+                            resolve();
+                        }, 300);
+                    });
+                    await timer;
                 }
 
-                const p2Item = players[randomInt(0, players.length - 1)];
-                const $p2Item = $parent.querySelector(`.div${p2Item.id}`);
+                const player2 = await (await fetch('https://reactmarathon-api.herokuapp.com/api/mk/player/choose')).json();
 
+                const $p2Item = $parent.querySelector(`.div${player2.id}`);
                 $p2Item.classList.add('active2');
-
                 $player2.innerHTML = '';
                 const $img = createElement('img');
-                $img.src = p2Item.img;
+                $img.src = player2.img;
                 $player2.appendChild($img);
 
+                return player2;
 
-                return new Promise((resolve) => {
-                    const timerId = setTimeout(() => {
-                        clearTimeout(timerId);
-                        return resolve(p2ItemSel(count - 1, $p2Item))
-                    }, 300);
-                });
             }
 
 
