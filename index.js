@@ -75,12 +75,7 @@ async function init() {
                     $img.src = p2Item.img;
                     $player2.appendChild($img);
 
-                    const timer = new Promise((resolve) => {
-                        const timerId = setTimeout(() => {
-                            clearTimeout(timerId);
-                            resolve();
-                        }, 300);
-                    });
+                    const timer = new Promise((resolve) => { setTimeout(resolve, 300) });
                     await timer;
                 }
 
