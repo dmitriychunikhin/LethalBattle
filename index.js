@@ -58,8 +58,7 @@ async function init() {
             el.classList.add('active1');
 
 
-            const p2ItemSel = async (count, $prevItem, timerIdPrev) => {
-                if (timerIdPrev) clearTimeout(timerIdPrev);
+            const p2ItemSel = async (count, $prevItem) => {
                 if ($prevItem) $prevItem.classList.remove('active2');
 
                 if (!count) {
@@ -87,7 +86,10 @@ async function init() {
 
 
                 return new Promise((resolve) => {
-                    const timerId = setTimeout(() => resolve(p2ItemSel(count - 1, $p2Item, timerId)), 300);
+                    const timerId = setTimeout(() => {
+                        clearTimeout(timerId);
+                        return resolve(p2ItemSel(count - 1, $p2Item))
+                    }, 300);
                 });
             }
 
