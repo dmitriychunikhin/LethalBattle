@@ -58,7 +58,10 @@ async function init() {
             el.classList.add('active1');
 
 
-            const p2ItemSel = async (count) => {
+            const p2ItemSel = async () => {
+                const count = 50;
+                const sleep = 20;
+
                 for (let i = 0; i < count; i++) {
                     const p2Item = players[randomInt(0, players.length - 1)];
                     const $p2Item = $parent.querySelector(`.div${p2Item.id}`);
@@ -70,7 +73,7 @@ async function init() {
                     $img.src = p2Item.img;
                     $player2.appendChild($img);
 
-                    const timer = new Promise((resolve) => { setTimeout(resolve, 300) });
+                    const timer = new Promise((resolve) => { setTimeout(resolve, sleep) });
                     await timer;
 
                     $p2Item.classList.remove('active2');
@@ -91,7 +94,7 @@ async function init() {
 
 
             setTimeout(async () => {
-                const player2 = await p2ItemSel(5);
+                const player2 = await p2ItemSel();
 
                 localStorage.setItem('player2', JSON.stringify(player2));
 
